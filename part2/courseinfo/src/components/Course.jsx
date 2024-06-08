@@ -1,7 +1,5 @@
 const Course = ({courses}) => {
 
-    // const test = courses.map(course => course)
-    // console.log(test)
     return(
         <div>
             <h1>Web development curriculum</h1>
