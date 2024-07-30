@@ -13,12 +13,12 @@ logger.info('connecting to', config.MONGODB_URL)
 
 
 mongoose.connect(config.MONGODB_URL)
-    .then(() => {
-        console.log('connected to MongoDB')
-    })
-    .catch((error) => {
-        console.error('error connecting to MongoDB', error.message)
-    })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.error('error connecting to MongoDB', error.message)
+  })
 
 
 
