@@ -46,10 +46,10 @@ describe('when there is initially some notes saved | api test', () => {
       }
 
       await api
-          .post('/api/blogs')
-          .send(newBlog)
-          .expect(201)
-          .expect('Content-Type', /application\/json/)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
       const notesAtEnd = await helper.blogsInDb()
       assert.strictEqual(notesAtEnd.length, helper.initialBlogs.length + 1)
@@ -83,10 +83,10 @@ describe('when there is initially some notes saved | api test', () => {
       }
 
       await api
-          .post('/api/blogs')
-          .send(newBlog)
-          .expect(201)
-          .expect('Content-Type', /application\/json/)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
       const blogs = await helper.blogsInDb()
       const addedBlog = blogs.find(blog => blog.title === 'Blog without likes')
@@ -101,9 +101,9 @@ describe('when there is initially some notes saved | api test', () => {
       }
 
       await api
-          .post('/api/blogs')
-          .send(newBlog)
-          .expect(400)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
     })
 
   })
@@ -114,8 +114,8 @@ describe('when there is initially some notes saved | api test', () => {
       const blogToDelete = blogsAtStart[0]
 
       await api
-          .delete(`/api/blogs/${blogToDelete.id}`)
-          .expect(204)
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
       const titles = blogsAtEnd.map(blog => blog.title)
@@ -136,10 +136,10 @@ describe('when there is initially some notes saved | api test', () => {
       const newLikes = 666
 
       await api
-          .put(`/api/blogs/${blogToUpdate.id}`)
-          .send({ ...blogToUpdate, likes: newLikes })
-          .expect(200)
-          .expect('Content-Type', /application\/json/)
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send({ ...blogToUpdate, likes: newLikes })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
 
       const blogAtEnd = await helper.blogsInDb()
       const updatedBlogAtEnd = blogAtEnd[0]

@@ -1,4 +1,5 @@
 const logger = require('./logger')
+const _ = require('lodash')
 
 const dummy = () => {
   return 1
@@ -29,8 +30,23 @@ const favoriteBlog = (blogs) => {
   }
 }
 
+const mostBlogs = (blogs) => {
+
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const authorWithMostBlogs = _(blogs)
+    .groupBy('author')
+    .map((group, author) => ({ author, blogs: group.length }))
+    .maxBy('blogs')
+
+  return authorWithMostBlogs
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
