@@ -11,7 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         personService
@@ -78,6 +78,13 @@ const App = () => {
                         }, 5000)
                     }
                 )
+                .catch(error => {
+                    console.log(error.response.data.error)
+                    setMessage(error.response.data.error)
+                    setTimeout(() =>  {
+                        setMessage(null)
+                    }, 5000)
+                })
         }
     }
 
