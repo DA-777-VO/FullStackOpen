@@ -11,24 +11,60 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 
-describe('when there is initially some notes saved | api test', () => {
+
+describe('when there is initially some blogs saved | api test', () => {
+
+  let headers
 
   beforeEach(async() => {
     await Blog.deleteMany({})
     const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
+    //await Blog.insertMany(helper.initialBlogs)
+
+    await User.deleteMany({})
+
+    const newUser = {
+      username: 'root',
+      name: 'root',
+      password: 'password'
+    }
+
+    const rootUser = {
+      username: 'root',
+      password: 'password'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+
+    const result = await api
+      .post('/api/login')
+      .send(rootUser)
+
+    headers = {
+      'Authorization': `Bearer ${result.body.token}`
+    }
+
   })
 
-  test('notes are returned as JSON', async() => {
+
+  test('blogs are returned as json', async () => {
+
     await api
       .get('/api/blogs')
+      .set(headers)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
-  test('all notes are returned', async() => {
-    const response = await api.get('/api/blogs')
+  test('all blogs are returned', async() => {
+    const response = await api
+      .get('/api/blogs')
+      .set(headers)
+
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
   })
 
@@ -49,32 +85,17 @@ describe('when there is initially some notes saved | api test', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set(headers)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      const notesAtEnd = await helper.blogsInDb()
-      assert.strictEqual(notesAtEnd.length, helper.initialBlogs.length + 1)
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-      const content = notesAtEnd.map(blog => blog.title)
+      const content = blogsAtEnd.map(blog => blog.title)
       assert(content.includes('Nomernoi'))
 
     })
-
-    // test('if likes property is missing, it defaults to 0', async () => {
-    //   const newBlog = {
-    //     title: 'Blog without likes',
-    //     author: 'Camera Man',
-    //     url: 'https://reactpatterns.com/'
-    //   }
-    //
-    //   const response = await api
-    //     .post('/api/blogs')
-    //     .send(newBlog)
-    //     .expect(201)
-    //     .expect('Content-Type', /application\/json/)
-    //
-    //   assert.strictEqual(response.body.likes, 0, 'Likes should default to 0')
-    // })
 
     test('if likes property is missing, it defaults to 0', async () => {
       const newBlog = {
@@ -83,16 +104,14 @@ describe('when there is initially some notes saved | api test', () => {
         url: 'https://reactpatterns.com/'
       }
 
-      await api
+      const response = await api
         .post('/api/blogs')
         .send(newBlog)
+        .set(headers)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
-      const blogs = await helper.blogsInDb()
-      const addedBlog = blogs.find(blog => blog.title === 'Blog without likes')
-
-      assert.strictEqual(addedBlog.likes, 0)
+      assert.strictEqual(response.body.likes, 0, 'Likes should default to 0')
     })
 
     test('if the title or url are missing, respond with 400', async () => {
@@ -104,18 +123,57 @@ describe('when there is initially some notes saved | api test', () => {
       await api
         .post('/api/blogs')
         .send(newBlog)
+        .set(headers)
         .expect(400)
     })
+
+    test('A blog adding fails if user is unauthorized', async () => {
+
+      const newBlog = {
+        title: 'Blog without likes',
+        author: 'Camera Man',
+        url: 'https://reactpatterns.com/'
+      }
+
+      const blogsAtStart = await helper.blogsInDb()
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      const titles = blogsAtEnd.map(blog => blog.title)
+
+      assert(!titles.includes(newBlog.title))
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+
+    })
+
 
   })
 
   describe('delete test', () => {
     test('deletion of a blog', async () => {
+
+      const newBlog = {
+        title: 'Blog without likes',
+        author: 'Camera Man',
+        url: 'https://reactpatterns.com/'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .set(headers)
+        .expect(201)
+
       const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
+      const blogToDelete = blogsAtStart.find(blog => blog.title === newBlog.title)
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set(headers)
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -139,6 +197,7 @@ describe('when there is initially some notes saved | api test', () => {
       await api
         .put(`/api/blogs/${blogToUpdate.id}`)
         .send({ ...blogToUpdate, likes: newLikes })
+        .set(headers)
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
