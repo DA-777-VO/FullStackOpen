@@ -4,7 +4,10 @@ const Notification = ({ message}) => {
         return null
     }
 
-    if (message.toLowerCase().includes('information')){
+    if (message.toLowerCase().includes('information')
+        || message.toLowerCase().includes('validation')
+        || message.toLowerCase().includes('missing')
+    ){
         return (
             <div className='notificationErrorMessage'>
                 {message}
