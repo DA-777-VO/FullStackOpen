@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
 
   useEffect(() => {
@@ -44,7 +46,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-       setErrorMessage('Wrong credentials')
+       setErrorMessage('Wrong login or password')
+      console.log('Error with authorization. Wrong login or password')
+      setSuccessMessage(null)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -55,6 +59,7 @@ const App = () => {
 
   const handleLogout = (event) => {
     event.preventDefault()
+    console.log('user logging out')
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
   }
@@ -63,45 +68,51 @@ const App = () => {
 
   const createBlog = async (BlogToAdd) => {
     try {
-
       const createdBlog = await blogService
           .create(BlogToAdd)
-      // setErrorMessage(
-      //     `Blog ${BlogToAdd.title} was successfully added`
-      // )
+      setSuccessMessage(
+          `Blog ${BlogToAdd.title} was successfully added! With author ${BlogToAdd.author}`
+      )
       setBlogs(blogs.concat(createdBlog))
-      console.log('Created Blog: ', createdBlog.title, createdBlog.author)
-      //setErrorMessage(null)
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
+      console.log(`Created Blog: ${createdBlog.title}, author ${createdBlog.author}`)
+      setErrorMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     } catch(exception) {
-      // setErrorMessage(
-      //     `Cannot add blog ${BlogToAdd.title}`
-      // )
-      // setErrorMessage(null)
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
+      setErrorMessage(
+          `Cannot add blog ${BlogToAdd.title}, author ${BlogToAdd.author}`
+      )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
 
   if (user === null) {
    return (
-       <LoginForm
-           handleLogin={handleLogin}
-           username={username}
-           setUsername={setUsername}
-           setPassword={setPassword}
-           password={password}
-       />
+       <div>
+         <h2>Log in to application</h2>
+         <Notification errorMessage={errorMessage} successMessage={successMessage}/>
+         <LoginForm
+             handleLogin={handleLogin}
+             username={username}
+             setUsername={setUsername}
+             setPassword={setPassword}
+             password={password}
+         />
+       </div>
    )
   }
 
   return (
       <div>
         <h2>blogs</h2>
+
+        <Notification errorMessage={errorMessage} successMessage={successMessage} />
+
         <p>{user.name} logged-in <button onClick={handleLogout}>logout</button></p>
 
         <BlogForm createBlog={createBlog} />
