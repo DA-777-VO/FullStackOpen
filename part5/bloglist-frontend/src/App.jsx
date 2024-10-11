@@ -27,9 +27,9 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-    )
+    blogService.getAll().then(blogs => {
+      setBlogs(blogs)
+    })
   }, [user])
 
   const handleLogin = async (event) => {
@@ -93,6 +93,30 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (BlogToUpdate) => {
+    try {
+      const updatedBlog = await blogService
+          .update(BlogToUpdate)
+      setSuccessMessage(
+          `Blog ${BlogToUpdate.title} was successfully updated!`
+      )
+      setBlogs(blogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog ))
+      console.log(`Updated blog: ${updatedBlog.title}`)
+      setErrorMessage(null)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch(exception) {
+      setErrorMessage(
+          `Cannot update blog ${BlogToUpdate.title}`
+      )
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
 
   if (user === null) {
    return (
@@ -114,23 +138,20 @@ const App = () => {
       <div>
         <h2>blogs</h2>
 
-        <Notification errorMessage={errorMessage} successMessage={successMessage} />
+        <Notification errorMessage={errorMessage} successMessage={successMessage}/>
 
         <p>{user.name} logged-in <button onClick={handleLogout}>logout</button></p>
 
-        <Togglable buttonLabel="new note" ref={BlogFormRef}>
-          <BlogForm createBlog={createBlog} />
+        <Togglable buttonLabel="create new blog" ref={BlogFormRef}>
+          <BlogForm createBlog={createBlog}/>
         </Togglable>
 
 
-
-        {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog}/>
+        {blogs.sort((b1,b2)=> b2.likes - b1.likes).map(blog =>
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
         )}
+
       </div>
   )
-
-
 }
-
 export default App
