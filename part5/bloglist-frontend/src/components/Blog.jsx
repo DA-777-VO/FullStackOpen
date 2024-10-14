@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog, deleteBlog, user}) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -10,41 +10,41 @@ const Blog = ({ blog, updateBlog, deleteBlog, user}) => {
     setVisible(!visible)
   }
 
-const blogStyle = {
-  paddingTop: 10,
-  paddingLeft: 2,
-  border: 'solid',
-  borderWidth: 1,
-  marginBottom: 5
-}
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
-    const addLikes = () => {
-        //event.preventDefault()
-        updateBlog({
-            ...blog,
-            likes: blog.likes + 1,
-        })
-    }
+  const addLikes = () => {
+    //event.preventDefault()
+    updateBlog({
+      ...blog,
+      likes: blog.likes + 1,
+    })
+  }
 
- return (
-     <div style={blogStyle}>
-       <div style={hideWhenVisible}>
-         {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
-       </div>
+  return (
+    <div style={blogStyle}>
+      <div style={hideWhenVisible}>
+        {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
+      </div>
 
-         <div style={showWhenVisible}>
-             <p>{blog.title} {blog.author}
-                 <button onClick={toggleVisibility}>hide</button>
-             </p>
-             <p>{blog.url}</p>
-             <p>Likes: {blog.likes}
-                 <button onClick={addLikes}>like</button>
-             </p>
-             <p>{blog.user && blog.user.name}</p>
-             {blog.user.id === user.id && (<button onClick={() => deleteBlog(blog)}>remove</button>)}
-         </div>
-     </div>
- )
+      <div style={showWhenVisible}>
+        <p>{blog.title} {blog.author}
+          <button onClick={toggleVisibility}>hide</button>
+        </p>
+        <p>{blog.url}</p>
+        <p>Likes: {blog.likes}
+          <button onClick={addLikes}>like</button>
+        </p>
+        <p>{blog.user && blog.user.name}</p>
+        {blog.user.id === user.id && (<button onClick={() => deleteBlog(blog)}>remove</button>)}
+      </div>
+    </div>
+  )
 
 }
 

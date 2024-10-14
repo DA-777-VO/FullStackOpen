@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef} from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Togglable from "./components/Togglable";
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -41,14 +41,14 @@ const App = () => {
       })
 
       window.localStorage.setItem(
-          'loggedBloglistUser', JSON.stringify(user)
+        'loggedBloglistUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
-       setErrorMessage('Wrong login or password')
+      setErrorMessage('Wrong login or password')
       console.log('Error with authorization. Wrong login or password')
       setSuccessMessage(null)
       setTimeout(() => {
@@ -72,9 +72,9 @@ const App = () => {
     try {
       BlogFormRef.current.toggleVisibility()
       const createdBlog = await blogService
-          .create(BlogToAdd)
+        .create(BlogToAdd)
       setSuccessMessage(
-          `Blog ${BlogToAdd.title} was successfully added! With author ${BlogToAdd.author}`
+        `Blog ${BlogToAdd.title} was successfully added! With author ${BlogToAdd.author}`
       )
       setBlogs(blogs.concat(createdBlog))
       console.log(`Created Blog: ${createdBlog.title}, author ${createdBlog.author}`)
@@ -84,7 +84,7 @@ const App = () => {
       }, 5000)
     } catch(exception) {
       setErrorMessage(
-          `Cannot add blog ${BlogToAdd.title}, author ${BlogToAdd.author}`
+        `Cannot add blog ${BlogToAdd.title}, author ${BlogToAdd.author}`
       )
       setSuccessMessage(null)
       setTimeout(() => {
@@ -96,9 +96,9 @@ const App = () => {
   const updateBlog = async (BlogToUpdate) => {
     try {
       const updatedBlog = await blogService
-          .update(BlogToUpdate)
+        .update(BlogToUpdate)
       setSuccessMessage(
-          `Blog ${BlogToUpdate.title} was successfully updated!`
+        `Blog ${BlogToUpdate.title} was successfully updated!`
       )
       setBlogs(blogs.map(blog => blog.id !== BlogToUpdate.id ? blog : updatedBlog ))
       console.log(`Updated blog: ${updatedBlog.title}`)
@@ -108,7 +108,7 @@ const App = () => {
       }, 5000)
     } catch(exception) {
       setErrorMessage(
-          `Cannot update blog ${BlogToUpdate.title}`
+        `Cannot update blog ${BlogToUpdate.title}`
       )
       setSuccessMessage(null)
       setTimeout(() => {
@@ -121,9 +121,9 @@ const App = () => {
     try {
       if(window.confirm(`Delete ${BlogToDelete.title} ?`)){
         blogService
-            .remove(BlogToDelete.id)
+          .remove(BlogToDelete.id)
         setSuccessMessage(
-            `Blog ${BlogToDelete.title} was successfully deleted!`)
+          `Blog ${BlogToDelete.title} was successfully deleted!`)
         setBlogs(blogs.filter(blog => blog.id !== BlogToDelete.id ))
         console.log(`Deleted blog: ${BlogToDelete.title}`)
         setErrorMessage(null)
@@ -132,52 +132,52 @@ const App = () => {
         }, 5000)
       }
     } catch(exception) {
-        setErrorMessage(
-            `Cannot delete blog ${BlogToDelete.title}`
-        )
-        console.log(`Cannot delete blog: ${BlogToDelete.title}`)
-        setSuccessMessage(null)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      }
+      setErrorMessage(
+        `Cannot delete blog ${BlogToDelete.title}`
+      )
+      console.log(`Cannot delete blog: ${BlogToDelete.title}`)
+      setSuccessMessage(null)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
 
   if (user === null) {
-   return (
-       <div>
-         <h2>Log in to application</h2>
-         <Notification errorMessage={errorMessage} successMessage={successMessage}/>
-         <LoginForm
-             handleLogin={handleLogin}
-             username={username}
-             password={password}
-             setUsername={setUsername}
-             setPassword={setPassword}
-         />
-       </div>
-   )
+    return (
+      <div>
+        <h2>Log in to application</h2>
+        <Notification errorMessage={errorMessage} successMessage={successMessage}/>
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+        />
+      </div>
+    )
   }
 
   return (
-      <div>
-        <h2>blogs</h2>
+    <div>
+      <h2>blogs</h2>
 
-        <Notification errorMessage={errorMessage} successMessage={successMessage}/>
+      <Notification errorMessage={errorMessage} successMessage={successMessage}/>
 
-        <p>{user.name} logged-in <button onClick={handleLogout}>logout</button></p>
+      <p>{user.name} logged-in <button onClick={handleLogout}>logout</button></p>
 
-        <Togglable buttonLabel="create new blog" ref={BlogFormRef}>
-          <BlogForm createBlog={createBlog}/>
-        </Togglable>
+      <Togglable buttonLabel="create new blog" ref={BlogFormRef}>
+        <BlogForm createBlog={createBlog}/>
+      </Togglable>
 
 
-        {blogs.sort((b1,b2)=> b2.likes - b1.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user}/>
-        )}
+      {blogs.sort((b1,b2) => b2.likes - b1.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user}/>
+      )}
 
-      </div>
+    </div>
   )
 }
 export default App

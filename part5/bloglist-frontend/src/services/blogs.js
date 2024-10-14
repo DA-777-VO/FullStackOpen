@@ -8,7 +8,7 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 
   config = {
-    headers: {Authorization: token},
+    headers: { Authorization: token },
   }
 
 }
@@ -33,4 +33,4 @@ const remove = async id => {
   return response.data
 }
 
-export default { getAll, create, setToken, update, remove}
+export default { getAll, create, setToken, update, remove }
