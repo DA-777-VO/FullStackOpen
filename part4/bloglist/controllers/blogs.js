@@ -30,7 +30,8 @@ blogsRouter.post('/', async (request, response, next ) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    user: user._id,
+    user: user,
+    // user: user._id,
     likes: body.likes
   })
 

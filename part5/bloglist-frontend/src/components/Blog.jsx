@@ -27,12 +27,12 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} data-testid='smallBlogID'>
       <div style={hideWhenVisible} className='blog'>
         {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
       </div>
 
-      <div style={showWhenVisible} className={'fullBlog'}>
+      <div style={showWhenVisible} className={'fullBlog'} data-testid='blogID'>
         <p>{blog.title} {blog.author}
           <button onClick={toggleVisibility}>hide</button>
         </p>
