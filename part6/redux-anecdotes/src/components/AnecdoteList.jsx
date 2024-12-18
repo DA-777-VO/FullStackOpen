@@ -17,11 +17,23 @@ const Anecdote = ({anecdote, handleClick}) => {
 }
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(state => [...state]).sort((a, b) => b.votes - a.votes)
+
   const dispatch = useDispatch()
+  // const anecdotes = useSelector(state => [...state.anecdotes]).sort((a, b) => b.votes - a.votes)
+  const anecdotes = useSelector(state => {
+
+    if (state.filter === null) {
+      return state.anecdotes
+    }
+    return state.anecdotes.filter(anecdote =>
+      anecdote.content.toLocaleLowerCase().includes(state.filter.toLocaleLowerCase())
+    )
+  })
+
+  const sortedAnectodes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
   return(
-      anecdotes.map(anecdote =>
+      sortedAnectodes.map(anecdote =>
           <Anecdote
               key={anecdote.id}
               anecdote={anecdote}
@@ -31,6 +43,5 @@ const AnecdoteList = () => {
   )
 
 }
-
 
 export default AnecdoteList
