@@ -11,6 +11,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
+    "@eslint/js": "^9.17.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",
@@ -25,11 +26,13 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
     "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.45.0",
+    "eslint": "^8.57.1",
     "eslint-plugin-jest": "^28.9.0",
-    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-redux": "^4.2.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "globals": "^15.14.0",
     "jest": "^29.7.0",
     "json-server": "^1.0.0-beta.3",
     "vite": "4.4.5"

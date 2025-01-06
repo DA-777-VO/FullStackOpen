@@ -21,7 +21,7 @@ const AnecdoteList = () => {
 
   const dispatch = useDispatch()
 
-  const anecdotes = useSelector(state => {
+  const anecdotes = useSelector((state) => {
 
     if (state.filter === null) {
       return state.anecdotes
@@ -32,15 +32,15 @@ const AnecdoteList = () => {
 
   })
 
-  const sortedAnectodes = [...anecdotes].sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
   const handleVote = (anecdote) => {
-    dispatch(makeVote(anecdote)),
+    dispatch(makeVote(anecdote))
     dispatch(showNotification(`You voted ${anecdote.content}`, 5))
   }
 
   return(
-      sortedAnectodes.map(anecdote =>
+      sortedAnecdotes.map(anecdote =>
           <Anecdote
               key={anecdote.id}
               anecdote={anecdote}
@@ -52,3 +52,6 @@ const AnecdoteList = () => {
 }
 
 export default AnecdoteList
+
+
+// Разобраться  со всеми ошибками
