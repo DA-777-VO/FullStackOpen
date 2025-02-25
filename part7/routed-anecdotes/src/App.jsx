@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes, Route, Link, useMatch, useNavigate
 } from 'react-router-dom'
+import { useField } from "./hooks/index";
 
 const padding = {
   paddingRight: 5
@@ -63,6 +64,7 @@ const Footer = () => (
 )
 
 const Notification = ({message}) => {
+  console.log(`Notification component received message: "${message}"`)
 
   const style = {
     // border: 'solid',
@@ -73,9 +75,11 @@ const Notification = ({message}) => {
 
 
   if (!message) {
+    console.log('No message, not rendering notification')
     return null
   }
 
+  console.log('Rendering notification with message')
   return (
       <div style={style}>
         {message}
@@ -88,20 +92,32 @@ const CreateNew = (props) => {
 
   const navigate = useNavigate()
 
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const { reset: resetContent, ...contentInput} = useField('content')
+  const { reset: resetAuthor, ...authorInput} = useField('author')
+  const {reset: resetInfo, ...infoInput} = useField('info')
 
+  console.log("Field objects in CreateNew:", {
+    content: contentInput,
+    author: authorInput,
+    info: infoInput
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: contentInput.value,
+      author: authorInput.value,
+      info: infoInput.value,
       votes: 0
     })
     navigate('/')
+  }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
 
   return (
@@ -110,17 +126,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...contentInput} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...authorInput} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...infoInput} />
         </div>
         <button>create</button>
+        <button type="button" onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -149,6 +166,7 @@ const App = () => {
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
+    console.log('Adding new anecdote with ID:', anecdote.id, anecdote)
     setAnecdotes(anecdotes.concat(anecdote))
     setNotification(`A new anecdote ${anecdote.content} created!`)
     setTimeout(() => {
